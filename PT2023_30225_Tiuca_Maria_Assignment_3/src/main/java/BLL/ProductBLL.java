@@ -1,5 +1,6 @@
 package BLL;
 import Dao.ProductDAO;
+import Model.Client;
 import Model.Product;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,13 @@ public class ProductBLL {
         Product c=productDAO.findById(id);
         if(c==null){
             throw new NoSuchElementException("The product with id =" + id + " was not found!");
+        }
+        return c;
+    }
+    public Product findProductByName(String name){
+        Product c=productDAO.findByName(name);
+        if(c==null){
+            throw new NoSuchElementException("The product with id =" + name + " was not found!");
         }
         return c;
     }

@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Connection.ConnectionFactory;
+import Model.Order;
+
 public class AbstractDAO<T> {
     protected static final Logger LOGGER = Logger.getLogger(AbstractDAO.class.getName());
     private final Class<T> type;
@@ -24,7 +26,11 @@ public class AbstractDAO<T> {
         sb.append("SELECT ");
         sb.append(" * ");
         sb.append(" FROM ");
-        sb.append(type.getSimpleName());
+        if(type== Order.class){
+            sb.append("`").append(type.getSimpleName()).append("`");
+        }
+        else
+            sb.append(type.getSimpleName());
         return sb.toString();
     }
     private String createSelectQuery(String field) {
@@ -32,14 +38,22 @@ public class AbstractDAO<T> {
         sb.append("SELECT ");
         sb.append(" * ");
         sb.append(" FROM ");
-        sb.append(type.getSimpleName());
+        if(type== Order.class){
+            sb.append("`").append(type.getSimpleName()).append("`");
+        }
+        else
+            sb.append(type.getSimpleName());
         sb.append(" WHERE " + field + " =?");
         return sb.toString();
     }
     private String createDeleteQuery(HashMap<String,Object> fields){
         StringBuilder sb = new StringBuilder();
         sb.append("DELETE FROM ");
-        sb.append(type.getSimpleName());
+        if(type== Order.class){
+            sb.append("`").append(type.getSimpleName()).append("`");
+        }
+        else
+            sb.append(type.getSimpleName());
         sb.append(" WHERE ");
         for(String field:fields.keySet()){
             sb.append(field+" = ? AND ");
@@ -63,7 +77,11 @@ public class AbstractDAO<T> {
     private String createInsertQuery(T t) {
         StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO ");
-        sb.append(type.getSimpleName());
+        if(type== Order.class){
+            sb.append("`").append(type.getSimpleName()).append("`");
+        }
+        else
+            sb.append(type.getSimpleName());
         sb.append(" (");
         Field[] fields=type.getDeclaredFields();
         for(Field field:fields){
@@ -98,16 +116,14 @@ public class AbstractDAO<T> {
         sb.append(type.getSimpleName());
         sb.append("` SET ");
         for (String field : fieldsUpdatedValues.keySet()) {
-            sb.append("`");
             sb.append(field);
-            sb.append("` = ?, ");
+            sb.append(" = ?, ");
         }
         sb.delete(sb.length() - 2, sb.length()); // Remove the last comma and space
         sb.append(" WHERE ");
         for (String condition : conditionFieldsValues.keySet()) {
-            sb.append("`");
             sb.append(condition);
-            sb.append("` = ? AND ");
+            sb.append(" = ? AND ");
         }
         sb.delete(sb.length() - 5, sb.length()); // Remove the last "AND" and space
         return sb.toString();
@@ -185,6 +201,26 @@ public class AbstractDAO<T> {
             return createObjects(resultSet).get(0);
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, type.getName() + "DAO:findById " + e.getMessage());
+        } finally {
+            ConnectionFactory.close(resultSet);
+            ConnectionFactory.close(statement);
+            ConnectionFactory.close(connection);
+        }
+        return null;
+    }
+    public T findByName(String name) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String query = createSelectQuery("name");
+        try {
+            connection = ConnectionFactory.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setString(1, name);
+            resultSet = statement.executeQuery();
+            return createObjects(resultSet).get(0);
+        } catch (SQLException e) {
+            LOGGER.log(Level.WARNING, type.getName() + "DAO:findByName " + e.getMessage());
         } finally {
             ConnectionFactory.close(resultSet);
             ConnectionFactory.close(statement);

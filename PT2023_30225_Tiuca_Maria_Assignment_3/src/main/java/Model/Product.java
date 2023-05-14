@@ -36,6 +36,9 @@ public class Product {
     public void setName(String name) {
         this.name = name;
     }
+    public void actualizareStoc(int quantity){
+        this.quantity=this.quantity-quantity;
+    }
     public String toString(Product p) {
         return "id: "+p.getId()+" name: "+p.getName()+" quantity: "+p.getQuantity()+" price/buc: "+p.getPrice();
     }

@@ -3,17 +3,17 @@ public class Order {
     private int id;
     private String clientName;
     private String productName;
-    private String address;
-    private int quantity;
+    private String clientAddress;
+    private int productQuantity;
     private double price;
     public Order(){}
-    public Order(int id,Client c,Product p){
+    public Order(int id,String clientName,String productName,String address,int quantity,double price){
         this.id=id;
-        this.clientName=c.getName();
-        this.productName=p.getName();
-        this.address=c.getAddress();
-        this.quantity=p.getQuantity();
-        this.price=p.getQuantity()*p.getPrice();
+        this.clientName=clientName;
+        this.productName=productName;
+        this.clientAddress=address;
+        this.productQuantity=quantity;
+        this.price=quantity*price;
     }
     public int getId() {
         return id;
@@ -21,17 +21,17 @@ public class Order {
     public void setId(int id) {
         this.id = id;
     }
-    public String getAddress() {
-        return address;
+    public String getClientAddress() {
+        return clientAddress;
     }
-    public void setAddress(String address) {
-        this.address = address;
+    public void setClientAddress(String clientAddress) {
+        this.clientAddress = clientAddress;
     }
-    public int getQuantity() {
-        return quantity;
+    public int getProductQuantity() {
+        return productQuantity;
     }
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setProductQuantity(int productQuantity) {
+        this.productQuantity = productQuantity;
     }
     public double getPrice() {
         return price;
@@ -52,6 +52,6 @@ public class Order {
         this.productName = productName;
     }
     public String toString(Order o){
-        return "id: "+o.getId()+" Client's name: "+o.getClientName()+" address "+o.getAddress()+" product: "+o.getProductName()+" quantity: "+o.getQuantity()+" price: "+o.getPrice();
+        return "id: "+o.getId()+" Client's name: "+o.getClientName()+" address "+o.getClientAddress()+" product: "+o.getProductName()+" quantity: "+o.getProductQuantity()+" price: "+o.getPrice();
     }
 }

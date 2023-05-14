@@ -4,7 +4,6 @@ import Model.Order;
 import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
-
 public class OrderBLL {
     private OrderDAO orderDAO=new OrderDAO();
     public OrderBLL(){
@@ -23,7 +22,7 @@ public class OrderBLL {
         }
         return c;
     }
-    public Order insert(Order t) {
+    public Order insert(Order t){
         Order inserat=orderDAO.insert(t);
         return inserat;
     }
