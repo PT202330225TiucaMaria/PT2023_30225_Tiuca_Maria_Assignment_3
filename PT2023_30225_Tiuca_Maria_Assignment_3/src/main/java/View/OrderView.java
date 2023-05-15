@@ -29,6 +29,8 @@ public class OrderView {
     private JComboBox comboBox4;
     private JTextField textField2;
     private JTextField textField3;
+    private JButton viewAllBillsButton;
+    private JButton viewBillByIdButton;
 
     public OrderView(){
         final JFrame frame = new JFrame();
@@ -131,6 +133,24 @@ public class OrderView {
                 conditionFieldUpdate.put("id",p.getId());
                 productbll.update(p,fieldsUpdated,conditionFieldUpdate);
                 orderbll.delete(conditionField);
+            }
+        });
+        viewAllBillsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("CLICK VIEW ALL BILLS!");
+                int id=-1;
+                new BillView(id);
+            }
+        });
+        viewBillByIdButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("CLICK VIEW ALL BILLS!");
+                int id=-1;
+                if(!textField2.getText().equals(""))
+                     id=Integer.parseInt(textField2.getText());
+                new BillView(id);
             }
         });
         frame.setVisible(true);

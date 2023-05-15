@@ -7,8 +7,6 @@ public class OrdersManagement {
     private JButton clientManagementButton;
     private JButton productManagementButton;
     private JButton orderManagementButton;
-    private JButton billManagementButton;
-
     public OrdersManagement(){
         final JFrame frame = new JFrame();
         frame.setTitle("Order Managemet View");
@@ -34,13 +32,6 @@ public class OrdersManagement {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("CLICK ORDER MANAGEMENT!");
                 new OrderView();
-            }
-        });
-        billManagementButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("CLICK VIEW ALL BILLS!");
-                new BillView();
             }
         });
         frame.setVisible(true);
