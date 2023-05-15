@@ -208,26 +208,6 @@ public class AbstractDAO<T> {
         }
         return null;
     }
-    public T findByName(String name) {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        String query = createSelectQuery("name");
-        try {
-            connection = ConnectionFactory.getConnection();
-            statement = connection.prepareStatement(query);
-            statement.setString(1, name);
-            resultSet = statement.executeQuery();
-            return createObjects(resultSet).get(0);
-        } catch (SQLException e) {
-            LOGGER.log(Level.WARNING, type.getName() + "DAO:findByName " + e.getMessage());
-        } finally {
-            ConnectionFactory.close(resultSet);
-            ConnectionFactory.close(statement);
-            ConnectionFactory.close(connection);
-        }
-        return null;
-    }
     private List<T> createObjects(ResultSet resultSet) {
         List<T> list = new ArrayList<T>();
         Constructor[] ctors = type.getDeclaredConstructors();

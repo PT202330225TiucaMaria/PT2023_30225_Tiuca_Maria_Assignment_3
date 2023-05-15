@@ -16,13 +16,6 @@ public class ProductBLL {
         }
         return c;
     }
-    public Product findProductByName(String name){
-        Product c=productDAO.findByName(name);
-        if(c==null){
-            throw new NoSuchElementException("The product with id =" + name + " was not found!");
-        }
-        return c;
-    }
     public List<Product> findAll() {
         List<Product> c=productDAO.findAll();
         if(c==null){

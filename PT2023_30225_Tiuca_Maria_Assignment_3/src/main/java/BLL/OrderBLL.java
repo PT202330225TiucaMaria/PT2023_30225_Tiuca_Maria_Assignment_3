@@ -26,10 +26,6 @@ public class OrderBLL {
         Order inserat=orderDAO.insert(t);
         return inserat;
     }
-    public Order update(Order t, HashMap<String, Object> fieldsUpdatedValues, HashMap<String, Object> conditionFieldsValues) {
-        Order updated=orderDAO.update(t,fieldsUpdatedValues,conditionFieldsValues);
-        return updated;
-    }
     public void delete(HashMap<String, Object> deleteCondition) {
         orderDAO.delete(deleteCondition);
     }

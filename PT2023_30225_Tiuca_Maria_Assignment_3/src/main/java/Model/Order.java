@@ -6,14 +6,22 @@ public class Order {
     private String clientAddress;
     private int productQuantity;
     private double price;
+    private int productId;
     public Order(){}
-    public Order(int id,String clientName,String productName,String address,int quantity,double price){
+    public Order(int id,Client client,Product product,int quantity){
         this.id=id;
-        this.clientName=clientName;
-        this.productName=productName;
-        this.clientAddress=address;
+        this.clientName=client.getName();
+        this.productName=product.getName();
+        this.clientAddress=client.getAddress();
         this.productQuantity=quantity;
-        this.price=quantity*price;
+        this.price=quantity*product.getPrice();
+        this.productId=product.getId();
+    }
+    public int getProductId() {
+        return productId;
+    }
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
     public int getId() {
         return id;

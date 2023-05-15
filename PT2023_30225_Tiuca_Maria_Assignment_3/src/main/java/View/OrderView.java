@@ -1,7 +1,9 @@
 package View;
+import BLL.BillBLL;
 import BLL.ClientBLL;
 import BLL.OrderBLL;
 import BLL.ProductBLL;
+import Model.Bill;
 import Model.Client;
 import Model.Order;
 import Model.Product;
@@ -10,17 +12,14 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-
 public class OrderView {
     private JComboBox comboBox1;
     private JComboBox comboBox2;
     private JTextField textField1;
     private JButton createOrderButton;
-    private JButton updateOrderButton;
     private JButton deleteOrderButton;
     private JButton viewAllOrdesButton;
     private JTable table1;
@@ -30,7 +29,6 @@ public class OrderView {
     private JComboBox comboBox4;
     private JTextField textField2;
     private JTextField textField3;
-    private JTextField textField4;
 
     public OrderView(){
         final JFrame frame = new JFrame();
@@ -43,9 +41,7 @@ public class OrderView {
         textField2.setVisible(true);
         textField2.setEditable(true);
         textField3.setVisible(true);
-        textField3.setEditable(true);
-        textField4.setVisible(true);
-        textField4.setEditable(true);
+        textField3.setEditable(false);
         comboBox1.setVisible(true);
         comboBox2.setVisible(true);
         ProductBLL productbll=new ProductBLL();
@@ -65,6 +61,7 @@ public class OrderView {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("CLICK NEW ORDER!");
                 OrderBLL orderbll = new OrderBLL();
+                BillBLL billbll=new BillBLL();
                 String quantityInput=textField1.getText();
                 int quantity=Integer.parseInt(quantityInput);
                 ClientBLL clientFind=new ClientBLL();
@@ -76,51 +73,25 @@ public class OrderView {
                     Client c = clientFind.findClientById(id);
                     id = Integer.parseInt(idProduct.toString());
                     Product p = productFind.findProductById(id);
-                    if (quantity < p.getQuantity()) {
+                    if (quantity <= p.getQuantity()) {
                         List<Order> o=orderbll.findAll();
                         id=generateUniqueRandomId(o);
-                        Order order = new Order(id,c.getName(), p.getName(),c.getAddress(), quantity,p.getPrice());
+                        textField3.setText("PRODUSE  DISPONIBILE IN STOC");
+                        Order order = new Order(id,c,p,quantity);
+                        Bill bill=new Bill(order.getId(),c.getName(),c.getAddress(),p.getName(),p.getId(),order.getProductQuantity(), order.getPrice());
                         orderbll.insert(order);
+                        billbll.insert(bill);
                         p.actualizareStoc(quantity);
                         HashMap<String,Object> fieldsUpdated=new HashMap<>();
                         fieldsUpdated.put("quantity",p.getQuantity());
                         HashMap<String,Object> conditionField=new HashMap<>();
-                        conditionField.put("name",p.getName());
+                        conditionField.put("id",p.getId());
                         productbll.update(p,fieldsUpdated,conditionField);
+                        }
+                    else
+                        textField3.setText("NU EXISTA ATATEA PRODUSE IN STOC");
                     }
                 }
-            }
-        });
-        updateOrderButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("CLICK UPDATE ORDER!");
-                OrderBLL orderbll = new OrderBLL();
-                ProductBLL productbll = new ProductBLL();
-                HashMap<String, Object> conditionField = new HashMap<>();
-                HashMap<String, Object> updateField = new HashMap<>();
-                int id=0,quantity=0;
-                if(!textField2.getText().equals("")) {
-                    id=Integer.parseInt(textField2.getText());
-                    conditionField.put("id", Integer.parseInt(textField2.getText()));
-                }
-                if(!textField3.getText().equals(""))
-                    conditionField.put("clientAddress",textField3.getText());
-                if(!textField4.getText().equals("")) {
-                    quantity=Integer.parseInt(textField4.getText());
-                    conditionField.put("productQuantity", Integer.parseInt(textField4.getText()));
-                }
-                Order o=orderbll.findOrderById(id);
-
-                Product p=productbll.findProductByName(o.getProductName());
-                HashMap<String,Object> fieldsUpdated=new HashMap<>();
-                fieldsUpdated.put("quantity",p.getQuantity()+(o.getProductQuantity()-quantity));
-                HashMap<String,Object> conditionFieldUpdate=new HashMap<>();
-                conditionFieldUpdate.put("name",o.getProductName());
-                productbll.update(p,fieldsUpdated,conditionFieldUpdate);
-
-                orderbll.update(o,updateField,conditionField);
-            }
         });
         viewAllOrdesButton.addActionListener(new ActionListener() {
             @Override
@@ -132,10 +103,11 @@ public class OrderView {
                 String[] numeColoane= new String[nrColoane];
                 Object[] valori= new Object[nrColoane];
                 int contor=0;
+                tableModel=new DefaultTableModel(numeColoane,0);
                 for(Order c1:c){
                     ReflectionExample.retrieveProperties(c1,numeColoane,valori);
                     if(contor==0)
-                        tableModel=new DefaultTableModel(numeColoane,0);
+                       tableModel=new DefaultTableModel(numeColoane,0);
                     tableModel.addRow(valori);
                     contor++;
                 }
@@ -152,11 +124,11 @@ public class OrderView {
                 if(!textField2.getText().equals(""))
                     conditionField.put("id",Integer.parseInt(textField2.getText()));
                 Order o=orderbll.findOrderById(Integer.parseInt(textField2.getText()));
-                Product p=productbll.findProductByName(o.getProductName());
+                Product p=productbll.findProductById(o.getProductId());
                 HashMap<String,Object> fieldsUpdated=new HashMap<>();
                 fieldsUpdated.put("quantity",p.getQuantity()+o.getProductQuantity());
                 HashMap<String,Object> conditionFieldUpdate=new HashMap<>();
-                conditionFieldUpdate.put("name",o.getProductName());
+                conditionFieldUpdate.put("id",p.getId());
                 productbll.update(p,fieldsUpdated,conditionFieldUpdate);
                 orderbll.delete(conditionField);
             }
